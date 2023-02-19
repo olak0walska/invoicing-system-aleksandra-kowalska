@@ -1,4 +1,5 @@
 package pl.futurecollars.invoicing;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,6 +10,7 @@ import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
 import pl.futurecollars.invoicing.model.Vat;
 import pl.futurecollars.invoicing.service.InvoiceService;
+
 public class App {
 
   public static void main(String[] args) {
