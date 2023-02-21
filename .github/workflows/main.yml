@@ -11,11 +11,11 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [task*]
   pull_request:
-    branches: [master]
+    branches: [task*]
 
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,5 +27,5 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '14'
-      - name: Build witch gradle
-        uses: ./gradlew build
+      - name: Build with gradle
+        run: ./gradlew build
