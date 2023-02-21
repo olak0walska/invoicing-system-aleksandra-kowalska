@@ -31,5 +31,7 @@ public class App {
     System.out.println(service.getAll());
 
     service.delete(id);
+
+
   }
 }
