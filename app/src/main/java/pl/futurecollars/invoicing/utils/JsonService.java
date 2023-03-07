@@ -18,7 +18,7 @@ public class JsonService {
 
   public String toJson(Object object) {
     try {
-      return objectMapper.writeValueAsString(object);
+      return objectMapper.writeValueAsString(object).replaceAll(System.lineSeparator(), "");
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Cannot convert object to JSON", e);
     }

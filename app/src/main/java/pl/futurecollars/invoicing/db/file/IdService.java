@@ -15,7 +15,6 @@ public class IdService {
     this.fileService = fileService;
     this.path = path;
 
-
     try {
       List<String> lines = fileService.readAllLines(path);
       if (lines.isEmpty()) {
@@ -29,7 +28,12 @@ public class IdService {
   }
 
   public int getNextIdAndIncrement() {
-
+    try {
+      fileService.writeLineToFile(path, String.valueOf(nextId + 1));
+      return this.nextId++;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }
