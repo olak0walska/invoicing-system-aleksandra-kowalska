@@ -49,11 +49,43 @@ public class FileBasedDatabase implements Database {
 
   @Override
   public void update(int id, Invoice updatedInvoice) {
+    try {
+      List<String> allInvoices = fileService.readAllLines(dbPath);
+      var listWithoutInvoiceWithGivenId = allInvoices
+          .stream()
+          .filter(line -> !containsId(line, id))
+          .collect(Collectors.toList());
 
+      if (allInvoices.size() == listWithoutInvoiceWithGivenId.size()) {
+        throw new IllegalArgumentException("Id " + id + " does not exist");
+      }
+
+      updatedInvoice.setId(id);
+      listWithoutInvoiceWithGivenId.add(jsonService.toJson(updatedInvoice));
+
+      fileService.writeLinesToFile(dbPath, listWithoutInvoiceWithGivenId);
+
+    } catch (IOException ex) {
+      throw new RuntimeException("Failed to update invoice with id: " + id, ex);
+    }
   }
 
   @Override
   public void delete(int id) {
+    try {
+      var updatedList = fileService.readAllLines(dbPath)
+          .stream()
+          .filter(line -> !containsId(line, id))
+          .collect(Collectors.toList());
 
+      fileService.writeLinesToFile(dbPath, updatedList);
+
+    } catch (IOException ex) {
+      throw new RuntimeException("Failed to delete invoice with id: " + id, ex);
+    }
+  }
+
+  private boolean containsId(String line, int id) {
+    return line.contains("\"id\":" + id + ",");
   }
 }

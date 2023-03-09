@@ -5,29 +5,32 @@ import pl.futurecollars.invoicing.db.memory.InMemoryDatabase
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
+import java.util.stream.Collectors
+
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 class InvoiceServiceIntegrationTest extends Specification {
 
-    private InvoiceService service;
-    private List<Invoice> invoices;
+    private InvoiceService service
+    private List<Invoice> invoices
 
     def setup() {
         Database db = new InMemoryDatabase();
         service = new InvoiceService(db);
 
-        invoices = (1..12).collect { invoice(it) }
+        invoices = (1..12).collect{ invoice(it)}
+        invoices = (1..12).collect{invoice(it)}
     }
 
-    def "should save invoices returning sequential id, invoice should have id set to correct value, get by id returns saved invoice"() {
+     def "should save invoices returning sequential id, invoice should have id set to correct value, get by id returns saved invoice"() {
         when:
         def ids = invoices.collect({ service.save(it) })
 
         then:
         ids == (1..invoices.size()).collect()
-        ids.forEach({ assert service.getById(it).isPresent() })
-        ids.forEach({ assert service.getById(it).get().getId() == it })
-        ids.forEach({ assert service.getById(it).get() == invoices.get(it - 1) })
+        ids.forEach{ assert service.getById(it).isPresent() }
+        ids.forEach{ assert service.getById(it).get().getId() == it }
+        ids.forEach{ assert service.getById(it).get() == invoices.get(it - 1) }
     }
 
     def "get by id returns empty optional when there is no invoice with given id"() {
