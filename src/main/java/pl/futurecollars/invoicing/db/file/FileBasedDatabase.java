@@ -32,7 +32,15 @@ public class FileBasedDatabase implements Database {
 
   @Override
   public Optional<Invoice> getById(int id) {
-    return Optional.empty();
+    try {
+      return fileService.readAllLines(dbPath)
+          .stream()
+          .filter(line -> containsId(line, id))
+          .map(line -> jsonService.toObject(line, Invoice.class))
+          .findFirst();
+    } catch (IOException ex) {
+      throw new RuntimeException("Database failed to get invoice with id: " + id, ex);
+    }
   }
 
   @Override

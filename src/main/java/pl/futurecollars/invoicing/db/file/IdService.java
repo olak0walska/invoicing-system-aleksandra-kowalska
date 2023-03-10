@@ -11,9 +11,9 @@ public class IdService {
   private final Path path;
   private int nextId = 1;
 
-  public IdService(FileService fileService, Path path) {
-    this.fileService = fileService;
+  public IdService(Path path, FileService fileService) {
     this.path = path;
+    this.fileService = fileService;
 
     try {
       List<String> lines = fileService.readAllLines(path);

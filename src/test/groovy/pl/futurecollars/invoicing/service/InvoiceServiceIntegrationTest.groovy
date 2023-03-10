@@ -5,8 +5,6 @@ import pl.futurecollars.invoicing.db.memory.InMemoryDatabase
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
-import java.util.stream.Collectors
-
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 class InvoiceServiceIntegrationTest extends Specification {
