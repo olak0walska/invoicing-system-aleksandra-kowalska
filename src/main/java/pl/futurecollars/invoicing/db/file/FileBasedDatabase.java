@@ -24,9 +24,10 @@ public class FileBasedDatabase implements Database {
     try {
       invoice.setId(idService.getNextIdAndIncrement());
       fileService.appendLineToFile(dbPath, jsonService.toJson(invoice));
+
       return invoice.getId();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
     }
   }
 
@@ -48,13 +49,12 @@ public class FileBasedDatabase implements Database {
     try {
       return fileService.readAllLines(dbPath)
           .stream()
-          .map(json -> jsonService.toObject(json, Invoice.class))
+          .map(line -> jsonService.toObject(line, Invoice.class))
           .collect(Collectors.toList());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (IOException ex) {
+      throw new RuntimeException("Failed to read invoices from file", ex);
     }
   }
-
   @Override
   public void update(int id, Invoice updatedInvoice) {
     try {
