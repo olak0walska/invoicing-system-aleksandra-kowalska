@@ -1,6 +1,7 @@
 package pl.futurecollars.invoicing.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -13,7 +14,7 @@ public class FileService {
   }
 
   public List<String> readAllLines(Path path) throws IOException {
-    return Files.readAllLines(path);
+    return Files.readAllLines(path, StandardCharsets.UTF_8);
   }
 
   public void writeLinesToFile(Path path, List<String> lines) throws IOException {
