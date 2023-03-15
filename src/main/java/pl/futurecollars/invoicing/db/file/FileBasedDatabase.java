@@ -55,6 +55,7 @@ public class FileBasedDatabase implements Database {
       throw new RuntimeException("Failed to read invoices from file", ex);
     }
   }
+
   @Override
   public void update(int id, Invoice updatedInvoice) {
     try {
