@@ -16,6 +16,10 @@ plugins {
     id 'checkstyle'
 
     id 'jacoco'
+
+    id 'org.springframework.boot' version '2.4.2'
+
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 repositories {
@@ -45,9 +49,13 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.1'
 
-
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+bootJar {
+    enabled = false
+}
 
 application {
     // Define the main class for the application.
@@ -102,5 +110,11 @@ jacocoTestCoverageVerification {
                 minimum = 0.70
             }
         }
+    }
+
+    afterEvaluate { // TODO [PK] remove after adding tests in Task #5
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/controller/**')
+        }))
     }
 }

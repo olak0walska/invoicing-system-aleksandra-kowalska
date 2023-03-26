@@ -57,37 +57,43 @@ public class FileBasedDatabase implements Database {
   }
 
   @Override
-  public void update(int id, Invoice updatedInvoice) {
+  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
     try {
       List<String> allInvoices = fileService.readAllLines(dbPath);
-      var listWithoutInvoiceWithGivenId = allInvoices
+      var invoicesWithoutInvoiceWithGivenId = allInvoices
           .stream()
           .filter(line -> !containsId(line, id))
           .collect(Collectors.toList());
 
-      if (allInvoices.size() == listWithoutInvoiceWithGivenId.size()) {
-        throw new IllegalArgumentException("Id " + id + " does not exist");
-      }
-
       updatedInvoice.setId(id);
-      listWithoutInvoiceWithGivenId.add(jsonService.toJson(updatedInvoice));
+      invoicesWithoutInvoiceWithGivenId.add(jsonService.toJson(updatedInvoice));
 
-      fileService.writeLinesToFile(dbPath, listWithoutInvoiceWithGivenId);
+      fileService.writeLinesToFile(dbPath, invoicesWithoutInvoiceWithGivenId);
+
+      allInvoices.removeAll(invoicesWithoutInvoiceWithGivenId);
+      return allInvoices.isEmpty() ? Optional.empty() : Optional.of(jsonService.toObject(allInvoices.get(0), Invoice.class));
 
     } catch (IOException ex) {
       throw new RuntimeException("Failed to update invoice with id: " + id, ex);
     }
+
   }
 
   @Override
-  public void delete(int id) {
+  public Optional<Invoice> delete(int id) {
     try {
-      var updatedList = fileService.readAllLines(dbPath)
+      var allInvoices = fileService.readAllLines(dbPath);
+
+      var invoicesExceptDeleted = allInvoices
           .stream()
           .filter(line -> !containsId(line, id))
           .collect(Collectors.toList());
 
-      fileService.writeLinesToFile(dbPath, updatedList);
+      fileService.writeLinesToFile(dbPath, invoicesExceptDeleted);
+
+      allInvoices.removeAll(invoicesExceptDeleted);
+
+      return allInvoices.isEmpty() ? Optional.empty() : Optional.of(jsonService.toObject(allInvoices.get(0), Invoice.class));
 
     } catch (IOException ex) {
       throw new RuntimeException("Failed to delete invoice with id: " + id, ex);
