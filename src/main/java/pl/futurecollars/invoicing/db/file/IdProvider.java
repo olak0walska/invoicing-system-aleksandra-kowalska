@@ -5,13 +5,13 @@ import java.nio.file.Path;
 import java.util.List;
 import pl.futurecollars.invoicing.utils.FileService;
 
-public class IdService {
+public class IdProvider {
 
   private final FileService fileService;
   private final Path path;
   private int nextId = 1;
 
-  public IdService(Path path, FileService fileService) {
+  public IdProvider(Path path, FileService fileService) {
     this.path = path;
     this.fileService = fileService;
 
