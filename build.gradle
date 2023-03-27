@@ -7,6 +7,9 @@
  */
 
 plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+
     // Apply the groovy plugin to also add support for Groovy (needed for Spock)
     id 'groovy'
 
@@ -112,7 +115,7 @@ jacocoTestCoverageVerification {
         }
     }
 
-    afterEvaluate { // TODO [PK] remove after adding tests in Task #5
+    afterEvaluate { // TODO [PK] remove after adding tests in Task #6
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/controller/**')
         }))
