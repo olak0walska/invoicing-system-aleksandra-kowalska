@@ -6,3 +6,13 @@ invoicing-system:
   database.directory: db
   database.invoices.file: invoices.txt
   database.id.file: id.txt
+
+logging:
+  level:
+    org:
+      springframework:
+        boot: INFO
+    pl:
+      futurecollars:
+        invoicing: WARN
+        invoicing.db: DEBUG
