@@ -19,6 +19,7 @@ public class InvoiceController implements InvoiceApi {
   public List<Invoice> getAll() {
     return invoiceService.getAll();
   }
+
   @Override
   public int add(@RequestBody Invoice invoice) {
     return invoiceService.save(invoice);
