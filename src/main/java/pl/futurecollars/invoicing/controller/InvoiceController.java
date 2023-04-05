@@ -13,13 +13,12 @@ import pl.futurecollars.invoicing.service.InvoiceService;
 @AllArgsConstructor
 public class InvoiceController implements InvoiceApi {
 
-
   private final InvoiceService invoiceService;
 
+  @Override
   public List<Invoice> getAll() {
     return invoiceService.getAll();
   }
-
   @Override
   public int add(@RequestBody Invoice invoice) {
     return invoiceService.save(invoice);
