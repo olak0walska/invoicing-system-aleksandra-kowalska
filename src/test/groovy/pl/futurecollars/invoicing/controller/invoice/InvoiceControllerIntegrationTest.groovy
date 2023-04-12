@@ -1,6 +1,7 @@
-package pl.futurecollars.invoicing.controller
+package pl.futurecollars.invoicing.controller.invoice
 
 import org.springframework.http.MediaType
+import pl.futurecollars.invoicing.controller.AbstractControllerTest
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -14,15 +15,12 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
     }
 
     def "add invoice returns sequential id"() {
-        given:
-        def invoiceAsJson = invoiceAsJson(1)
-
         expect:
-        def firstId = addInvoiceAndReturnId(invoiceAsJson)
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 1
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 2
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 3
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 4
+        def firstId = addInvoiceAndReturnId(invoice(1))
+        addInvoiceAndReturnId(invoice(2)) == firstId + 1
+        addInvoiceAndReturnId(invoice(3)) == firstId + 2
+        addInvoiceAndReturnId(invoice(4)) == firstId + 3
+        addInvoiceAndReturnId(invoice(5)) == firstId + 4
     }
 
     def "all invoices are returned when getting all invoices"() {
@@ -56,7 +54,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                get("$INVOICE_ENDPOINT/$id")
+                get("$AbstractControllerTest.INVOICE_ENDPOINT/$id")
         )
                 .andExpect(status().isNotFound())
 
@@ -71,7 +69,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                delete("$INVOICE_ENDPOINT/$id")
+                delete("$AbstractControllerTest.INVOICE_ENDPOINT/$id")
         )
                 .andExpect(status().isNotFound())
 
@@ -86,7 +84,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                put("$INVOICE_ENDPOINT/$id")
+                put("$AbstractControllerTest.INVOICE_ENDPOINT/$id")
                         .content(invoiceAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -99,13 +97,13 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
     def "invoice date can be modified"() {
         given:
-        def id = addInvoiceAndReturnId(invoiceAsJson(44))
+        def id = addInvoiceAndReturnId(invoice(44))
         def updatedInvoice = invoice(123)
         updatedInvoice.id = id
 
         expect:
         mockMvc.perform(
-                put("$INVOICE_ENDPOINT/$id")
+                put("$AbstractControllerTest.INVOICE_ENDPOINT/$id")
                         .content(jsonService.toJson(updatedInvoice))
                         .contentType(MediaType.APPLICATION_JSON)
         )
