@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 @AllArgsConstructor
 @Builder
 @Data
+@Jacksonized
 public class TaxCalculatorResult {
 
   private final BigDecimal income;
