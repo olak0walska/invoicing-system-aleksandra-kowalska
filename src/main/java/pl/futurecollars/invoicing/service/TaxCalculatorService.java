@@ -23,7 +23,7 @@ public class TaxCalculatorService {
   }
 
   public BigDecimal costs(String taxIdentificationNumber) {
-    return database.visit(buyerPredicate(taxIdentificationNumber), InvoiceEntry::getNetPrice);
+    return database.visit(buyerPredicate(taxIdentificationNumber), this::getIncomeValueTakingIntoConsiderationPersonalCarUsage);
   }
 
   public BigDecimal collectedVat(String taxIdentificationNumber) {
