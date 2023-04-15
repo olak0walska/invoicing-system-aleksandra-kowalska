@@ -13,8 +13,8 @@ class InvoiceServiceIntegrationTest extends Specification {
     private List<Invoice> invoices
 
     def setup() {
-        Database db = new InMemoryDatabase();
-        service = new InvoiceService(db);
+        Database db = new InMemoryDatabase()
+        service = new InvoiceService(db)
 
         invoices = (1..12).collect{ invoice(it)}
     }
