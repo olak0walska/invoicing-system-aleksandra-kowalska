@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.utils.service;
+package pl.futurecollars.invoicing.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
