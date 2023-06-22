@@ -21,7 +21,7 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
         def idService = new IdProvider(idPath, fileService)
 
         dbPath = File.createTempFile('invoices', '.txt').toPath()
-        return new FileBasedDatabase(dbPath, idService, fileService, new JsonService())
+        new FileBasedDatabase(dbPath, idService, fileService, new JsonService())
     }
 
     def "file based database writes invoices to correct file"() {
@@ -32,12 +32,12 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
         db.save(TestHelpers.invoice(4))
 
         then:
-        1 == Files.readAllLines(dbPath).size()
+        Files.readAllLines(dbPath).size() == 1
 
         when:
         db.save(TestHelpers.invoice(5))
 
         then:
-        2 == Files.readAllLines(dbPath).size()
+        Files.readAllLines(dbPath).size() == 2
     }
 }
