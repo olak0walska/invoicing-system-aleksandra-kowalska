@@ -1,6 +1,6 @@
 package pl.futurecollars.invoicing.db.file
 
-import  pl.futurecollars.invoicing.db.AbstractDatabaseTest
+import pl.futurecollars.invoicing.db.AbstractDatabaseTest
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.TestHelpers
 import pl.futurecollars.invoicing.utils.FileService
@@ -15,13 +15,13 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
 
     @Override
     Database getDatabaseInstance() {
-        def fileService = new FileService()
+        def filesService = new FileService()
 
         def idPath = File.createTempFile('ids', '.txt').toPath()
-        def idService = new IdProvider(idPath, fileService)
+        def idService = new IdProvider(idPath, filesService)
 
         dbPath = File.createTempFile('invoices', '.txt').toPath()
-        return new FileBasedDatabase(dbPath, idService, fileService, new JsonService())
+        new FileBasedDatabase(dbPath, idService, filesService, new JsonService())
     }
 
     def "file based database writes invoices to correct file"() {
@@ -32,12 +32,13 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
         db.save(TestHelpers.invoice(4))
 
         then:
-        1 == Files.readAllLines(dbPath).size()
+        Files.readAllLines(dbPath).size() == 1
 
         when:
         db.save(TestHelpers.invoice(5))
 
         then:
-        2 == Files.readAllLines(dbPath).size()
+        Files.readAllLines(dbPath).size() == 2
     }
+
 }
