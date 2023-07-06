@@ -120,7 +120,7 @@ public class SqlDatabase implements Database {
               + "where invoice_id = " + invoiceId,
           (response, ignored) -> InvoiceEntry.builder()
               .description(response.getString("description"))
-              .quantity(response.getLong("quantity"))
+              .quantity(response.getBigDecimal("quantity"))
               .netPrice(response.getBigDecimal("net_price"))
               .vatValue(response.getBigDecimal("vat_value"))
               .vatRate(Vat.valueOf(response.getString("vat_rate")))
