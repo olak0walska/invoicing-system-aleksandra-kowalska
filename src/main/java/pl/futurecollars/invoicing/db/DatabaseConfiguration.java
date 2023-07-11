@@ -58,7 +58,6 @@ public class DatabaseConfiguration {
     return new JpaDatabase(invoiceRepository);
   }
 
-
   @Bean
   @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "memory")
   public Database inMemoryDatabase() {
