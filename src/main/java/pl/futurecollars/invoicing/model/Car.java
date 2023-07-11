@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Car {
+
   @Id
   @JsonIgnore
   @GeneratedValue(strategy = GenerationType.IDENTITY)
