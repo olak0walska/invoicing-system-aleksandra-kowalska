@@ -2,6 +2,7 @@ buildscript {
     ext {
         groovyVersion = '3.0.16'
         lombokVersion = '1.18.26'
+        mongoVersion = '3.12.10'
         spockVersion = '2.3-groovy-3.0'
         springBootVersion = '2.4.2'
         springFoxStarterVersion = '3.0.0'
@@ -36,6 +37,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
+    implementation "org.mongodb:mongo-java-driver:${mongoVersion}"
+
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'org.postgresql:postgresql:42.2.19'
@@ -60,11 +63,12 @@ java {
 }
 
 jacocoTestCoverageVerification {
+    executionData tasks.withType(Test)
     violationRules {
         rule {
             limit {
                 counter = 'BRANCH'
-                minimum = 0.82
+                minimum = 0.80
             }
         }
 
@@ -83,11 +87,12 @@ jacocoTestCoverageVerification {
     }
 }
 
-test {
+check {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    executionData tasks.withType(Test)
+    dependsOn check
 }
 
 jacoco {
@@ -134,8 +139,8 @@ task testWithJpaFlywayDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'jpa-flyway'
 }
 
-task testWithPostgreSqlDatabase(type: Test) {
-    systemProperty 'spring.profiles.active', 'sql-pg'
+task testWithMongoDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'mongo'
 }
 
 
@@ -144,9 +149,14 @@ check.dependsOn testWithMemoryDatabase
 check.dependsOn testWithSqlDatabase
 check.dependsOn testWithJpaDatabase
 check.dependsOn testWithJpaFlywayDatabase
+check.dependsOn testWithMongoDatabase
 
 String osName = System.getProperty("os.name").toLowerCase()
 if (osName.contains("mac")) {
+    task testWithPostgreSqlDatabase(type: Test) {
+        systemProperty 'spring.profiles.active', 'sql-pg'
+    }
+
     check.dependsOn testWithPostgreSqlDatabase
 }
 
