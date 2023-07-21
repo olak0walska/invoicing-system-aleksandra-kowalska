@@ -160,6 +160,9 @@ if (osName.contains("mac")) {
     check.dependsOn testWithPostgreSqlDatabase
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Werror"
+}
 check.dependsOn jacocoTestCoverageVerification
 
 startScripts.dependsOn bootJar

@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.service;
+package pl.futurecollars.invoicing.service.tax;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +11,7 @@ import pl.futurecollars.invoicing.model.Car;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
+import pl.futurecollars.invoicing.service.tax.TaxCalculatorResult;
 
 @Service
 @AllArgsConstructor
