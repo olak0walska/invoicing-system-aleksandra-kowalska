@@ -15,6 +15,7 @@ public interface Database<T extends WithId> {
   Optional<T> update(long id, T updatedInvoice);
 
   Optional<T> delete(long id);
+
   default void reset() {
     getAll().forEach(item -> delete(item.getId()));
   }

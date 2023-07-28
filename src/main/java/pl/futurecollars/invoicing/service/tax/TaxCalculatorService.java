@@ -19,6 +19,7 @@ import pl.futurecollars.invoicing.service.tax.TaxCalculatorResult;
 public class TaxCalculatorService {
 
   private final Database<Invoice> database;
+
   public BigDecimal income(String taxIdentificationNumber) {
     return visit(sellerPredicate(taxIdentificationNumber), InvoiceEntry::getNetPrice);
   }
@@ -28,9 +29,11 @@ public class TaxCalculatorService {
   }
 
   public BigDecimal collectedVat(String taxIdentificationNumber) {
-    return visit(sellerPredicate(taxIdentificationNumber), InvoiceEntry::getVatValue);  }
+    return visit(sellerPredicate(taxIdentificationNumber), InvoiceEntry::getVatValue);
+  }
 
-  public BigDecimal paidVat(String taxIdentificationNumber) { // vat we pay when buying products
+  public BigDecimal paidVat(String taxIdentificationNumber)
+  { // vat we pay when buying products
     return visit(buyerPredicate(taxIdentificationNumber), this::getVatValueTakingIntoConsiderationPersonalCarUsage);  }
 
   private BigDecimal getVatValueTakingIntoConsiderationPersonalCarUsage(InvoiceEntry invoiceEntry) {
@@ -96,6 +99,7 @@ public class TaxCalculatorService {
   private Predicate<Invoice> buyerPredicate(String taxIdentificationNumber) {
     return invoice -> taxIdentificationNumber.equals(invoice.getBuyer().getTaxIdentificationNumber());
   }
+
   private BigDecimal visit(
       Predicate<Invoice> invoicePredicate,
       Function<InvoiceEntry, BigDecimal> invoiceEntryToValue

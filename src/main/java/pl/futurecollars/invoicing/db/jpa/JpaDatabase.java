@@ -48,7 +48,6 @@ public class JpaDatabase<T extends WithId> implements Database<T> {
 
     item.ifPresent(repository::delete);
 
-
     return item;
   }
 }
