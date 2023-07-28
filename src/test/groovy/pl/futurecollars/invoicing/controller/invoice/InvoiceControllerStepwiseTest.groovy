@@ -40,13 +40,17 @@ class InvoiceControllerStepwiseTest extends Specification {
     private JsonService jsonService
 
     @Autowired
-    private ApplicationContext context
+    private Database<Invoice> database
 
-    @Requires({ System.getProperty('spring.profiles.active', 'memory').contains("mongo") })
-    def "database is dropped to ensure clean state"() {
+    def "database is reset to ensure clean state"() {    def "database is dropped to ensure clean state"() {
         expect:
-        MongoDatabase mongoDatabase = context.getBean(MongoDatabase)
-        mongoDatabase.drop()
+        database != null
+
+        when:
+        database.reset()
+
+        then:
+        database.getAll().size() == 0
     }
 
     def "empty array is returned when no invoices were added"() {
@@ -100,7 +104,7 @@ class InvoiceControllerStepwiseTest extends Specification {
 
         then:
         invoices.size() == 1
-        invoices[0] == expectedInvoice
+        resetIds(invoices[0]) == resetIds(expectedInvoice)
     }
 
     def "invoice is returned correctly when getting by id"() {
@@ -117,8 +121,7 @@ class InvoiceControllerStepwiseTest extends Specification {
 
         def invoice = jsonService.toObject(response, Invoice)
 
-        then:
-        invoice == expectedInvoice
+        resetIds(invoice) == resetIds(expectedInvoice)
     }
 
     def "invoice date can be modified"() {
@@ -151,11 +154,10 @@ class InvoiceControllerStepwiseTest extends Specification {
                 .response
                 .contentAsString
 
-        def invoices = jsonService.toObject(response, Invoice)
+        def invoice = jsonService.toObject(response, Invoice)
 
         then:
-        invoices == expectedInvoice
-    }
+        resetIds(invoice) == resetIds(expectedInvoice)    }
 
     def "invoice can be deleted"() {
         expect:

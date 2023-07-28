@@ -27,7 +27,7 @@ import pl.futurecollars.invoicing.db.jpa.JpaDatabase;
 import pl.futurecollars.invoicing.db.memory.InMemoryDatabase;
 import pl.futurecollars.invoicing.db.mongo.MongoBasedDatabase;
 import pl.futurecollars.invoicing.db.mongo.MongoIdProvider;
-import pl.futurecollars.invoicing.db.sql.SqlDatabase;
+import pl.futurecollars.invoicing.db.sql.InvoiceSqlDatabase;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.utils.FileService;
 import pl.futurecollars.invoicing.utils.JsonService;
@@ -63,7 +63,7 @@ public class DatabaseConfiguration {
   @Bean
   @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "sql")
   public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
-    return new SqlDatabase(jdbcTemplate);
+    return new InvoiceSqlDatabase(jdbcTemplate);
   }
 
   @Bean
