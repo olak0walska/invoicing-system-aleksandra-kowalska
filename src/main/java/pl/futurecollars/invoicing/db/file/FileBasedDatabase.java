@@ -14,9 +14,9 @@ import pl.futurecollars.invoicing.utils.JsonService;
 @AllArgsConstructor
 public class FileBasedDatabase<T extends WithId> implements Database<T> {
 
-  private final Path dbPath;
+  private final Path databasePath;
   private final IdProvider idProvider;
-  private final FileService fileService;
+  private final FileService filesService;
   private final JsonService jsonService;
   private final Class<T> clazz;
 
@@ -24,18 +24,18 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
   public long save(T item) {
     try {
       item.setId(idProvider.getNextIdAndIncrement());
-      fileService.appendLineToFile(dbPath, jsonService.toJson(item));
+      filesService.appendLineToFile(databasePath, jsonService.toJson(item));
 
       return item.getId();
     } catch (IOException ex) {
-      throw new RuntimeException(ex);
+      throw new RuntimeException("Database failed to save item", ex);
     }
   }
 
   @Override
   public Optional<T> getById(long id) {
     try {
-      return fileService.readAllLines(dbPath)
+      return filesService.readAllLines(databasePath)
           .stream()
           .filter(line -> containsId(line, id))
           .map(line -> jsonService.toObject(line, clazz))
@@ -48,9 +48,9 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
   @Override
   public List<T> getAll() {
     try {
-      return fileService.readAllLines(dbPath)
+      return filesService.readAllLines(databasePath)
           .stream()
-          .map(line -> jsonService.toObject(line,clazz))
+          .map(line -> jsonService.toObject(line, clazz))
           .collect(Collectors.toList());
     } catch (IOException ex) {
       throw new RuntimeException("Failed to read items from file", ex);
@@ -60,7 +60,7 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
   @Override
   public Optional<T> update(long id, T updatedItem) {
     try {
-      List<String> allItems = fileService.readAllLines(dbPath);
+      List<String> allItems = filesService.readAllLines(databasePath);
       var itemsWithoutItemWithGivenId = allItems
           .stream()
           .filter(line -> !containsId(line, id))
@@ -69,11 +69,11 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
       updatedItem.setId(id);
       itemsWithoutItemWithGivenId.add(jsonService.toJson(updatedItem));
 
-      fileService.writeLinesToFile(dbPath, itemsWithoutItemWithGivenId);
+      filesService.writeLinesToFile(databasePath, itemsWithoutItemWithGivenId);
 
       allItems.removeAll(itemsWithoutItemWithGivenId);
       return allItems.isEmpty() ? Optional.empty()
-          : Optional.of(jsonService.toObject(allItems.get(0), clazz));.toObject(allInvoices.get(0), Invoice.class));
+          : Optional.of(jsonService.toObject(allItems.get(0), clazz));
 
     } catch (IOException ex) {
       throw new RuntimeException("Failed to update item with id: " + id, ex);
@@ -84,16 +84,16 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
   @Override
   public Optional<T> delete(long id) {
     try {
-      var allItems = fileService.readAllLines(dbPath);
+      var allItems = filesService.readAllLines(databasePath);
 
-      var invoicesExceptDeleted = allItems
+      var itemsExceptDeleted = allItems
           .stream()
           .filter(line -> !containsId(line, id))
           .collect(Collectors.toList());
 
-      fileService.writeLinesToFile(dbPath, invoicesExceptDeleted);
+      filesService.writeLinesToFile(databasePath, itemsExceptDeleted);
 
-      allItems.removeAll(invoicesExceptDeleted);
+      allItems.removeAll(itemsExceptDeleted);
 
       return allItems.isEmpty() ? Optional.empty() :
           Optional.of(jsonService.toObject(allItems.get(0), clazz));
