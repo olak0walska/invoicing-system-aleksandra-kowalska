@@ -32,9 +32,9 @@ public class TaxCalculatorService {
     return visit(sellerPredicate(taxIdentificationNumber), InvoiceEntry::getVatValue);
   }
 
-  public BigDecimal paidVat(String taxIdentificationNumber)
-  { // vat we pay when buying products
-    return visit(buyerPredicate(taxIdentificationNumber), this::getVatValueTakingIntoConsiderationPersonalCarUsage);  }
+  public BigDecimal paidVat(String taxIdentificationNumber) { // vat we pay when buying products
+    return visit(buyerPredicate(taxIdentificationNumber), this::getVatValueTakingIntoConsiderationPersonalCarUsage);
+  }
 
   private BigDecimal getVatValueTakingIntoConsiderationPersonalCarUsage(InvoiceEntry invoiceEntry) {
     return Optional.ofNullable(invoiceEntry.getExpenseRelatedToCar())
