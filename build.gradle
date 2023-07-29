@@ -93,6 +93,12 @@ check {
 jacocoTestReport {
     executionData tasks.withType(Test)
     dependsOn check
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/InvoiceApplication.class')
+        }))
+    }
 }
 
 jacoco {
@@ -108,9 +114,6 @@ jacocoTestReport {
     }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
 
 checkstyle {
     showViolations = true
