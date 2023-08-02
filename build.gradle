@@ -127,26 +127,32 @@ checkstyle {
 
 task testWithFileDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'file'
+    useJUnitPlatform()
 }
 
 task testWithMemoryDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'memory'
+    useJUnitPlatform()
 }
 
 task testWithSqlDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'sql'
+    useJUnitPlatform()
 }
 
 task testWithJpaDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'jpa'
+    useJUnitPlatform()
 }
 
 task testWithJpaFlywayDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'jpa-flyway'
+    useJUnitPlatform()
 }
 
 task testWithMongoDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'mongo'
+    useJUnitPlatform()
 }
 
 
@@ -161,6 +167,7 @@ String osName = System.getProperty("os.name").toLowerCase()
 if (osName.contains("mac")) {
     task testWithPostgreSqlDatabase(type: Test) {
         systemProperty 'spring.profiles.active', 'sql-pg'
+        useJUnitPlatform()
     }
 
     check.dependsOn testWithPostgreSqlDatabase
