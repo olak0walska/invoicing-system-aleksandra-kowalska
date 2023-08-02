@@ -8,6 +8,7 @@ import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.model.Invoice
 
 @SpringBootTest
+@IfProfileValue(name = "spring.profiles.active", value = "mongo")
 class MongoDatabaseIntegrationTest extends AbstractDatabaseTest {
 
     @Autowired
