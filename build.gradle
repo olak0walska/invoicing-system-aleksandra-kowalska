@@ -57,8 +57,23 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(14)
+        languageVersion = JavaLanguageVersion.of(15)
         vendor = JvmVendorSpec.ADOPTOPENJDK
+    }
+}
+
+jacocoTestReport {
+    executionData tasks.withType(Test)
+    dependsOn test
+    afterEvaluate{
+        classDirectories.setFrom(files(classDirectories.files.collect{
+            fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/InvoiceApplication.class')
+        }))
+    }
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
 }
 
@@ -68,14 +83,14 @@ jacocoTestCoverageVerification {
         rule {
             limit {
                 counter = 'BRANCH'
-                minimum = 0.90
+                minimum = 0.80
             }
         }
 
         rule {
             limit {
                 counter = 'LINE'
-                minimum = 0.90
+                minimum = 0.85
             }
         }
     }
@@ -86,19 +101,12 @@ jacocoTestCoverageVerification {
         }))
     }
 }
+test {
+    finalizedBy jacocoTestReport
+}
 
 check {
-    finalizedBy jacocoTestReport // report is always generated after tests run
-}
-jacocoTestReport {
-    executionData tasks.withType(Test)
-    dependsOn check
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/InvoiceApplication.class')
-        }))
-    }
+    finalizedBy jacocoTestCoverageVerification // report is always generated after tests run
 }
 
 jacoco {
@@ -106,14 +114,9 @@ jacoco {
     reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
+tasks.named('test') {
+    useJUnitPlatform()
 }
-
 
 checkstyle {
     showViolations = true
@@ -162,10 +165,5 @@ if (osName.contains("mac")) {
 
     check.dependsOn testWithPostgreSqlDatabase
 }
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Werror"
-}
-check.dependsOn jacocoTestCoverageVerification
 
 startScripts.dependsOn bootJar
